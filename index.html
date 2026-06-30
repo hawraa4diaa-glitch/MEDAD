@@ -177,21 +177,9 @@
         <div class="inline-status">
             <div style="font-weight: bold; margin-bottom: 8px;" id="timerProdDetails"></div>
             <div>الوقت المتبقي لانتهاء الحجز السلوكي تلقائياً:</div>
-            <div style="margin-top: 10px;"><span class="timer-badge" id="liveSimulationTimer">24:00:00</span></div>
+            <div style="margin-top: 10px;"><span class="timer-badge" id="liveSimulationTimer">23:59:59 ⏳</span></div>
         </div>
-    </div>
-</div>
-
-<div class="extension-overlay" id="decisionOverlay">
-    <div class="extension-popup">
-        <div class="popup-header" style="color: var(--success);">
-            🔓 انتهت مدة الحجز السلوكي التلقائي! (اكتمل تحدي الصمود)
-        </div>
-        <p style="font-size: 14px; line-height: 1.6; color: var(--text-main);" id="decisionPopupText"></p>
-        <div class="popup-actions" style="display:flex; flex-direction:row; gap:10px;">
-            <button class="action-btn btn-abort" style="flex:1;" onclick="processFinalDestination('savings')">💰 حساب المدخرات</button>
-            <button class="action-btn btn-ignore" style="flex:1; background-color: var(--primary); color:white;" onclick="processFinalDestination('wallet')">💳 المحفظة الجارية</button>
-        </div>
+        <button class="action-btn btn-ignore" style="margin-top: 15px;" onclick="document.getElementById('timerOverlay').style.display='none'">🖥️ العودة للمتجر</button>
     </div>
 </div>
 
@@ -212,7 +200,6 @@ function openCheckoutPage(productName, price) {
 function selectPaymentGateway(gateway) {
     document.getElementById('checkoutOverlay').style.display = 'none';
     if (gateway === 'alinma') {
-        // تحويل ديناميكي لصفحة فكرتك الإرشادية
         triggerAlinmaMindGate(currentProductName, currentProductPrice);
     } else {
         alert("تم الخصم المباشر وإتمام الشراء التقليدي دون الاستفادة من ميزات التوعية بمصرف الإنماء.");
@@ -221,7 +208,6 @@ function selectPaymentGateway(gateway) {
 
 // تشغيل ميزات التحليل المالي السلوكي (فكرتك)
 function triggerAlinmaMindGate(productName, price) {
-    // قيم افتراضية ذكية لحساب النسب والأيام لإبهار لجنة التحكيم بدون تعقيد الواجهة
     const userBudget = 2000;
     const userGoal = "شراء بلايستيشن 5 برو";
     const monthlySavings = 500;
@@ -261,47 +247,42 @@ function handleUserDecision(action) {
         document.getElementById('timerProdDetails').innerHTML = `المنتج المجمّد: ${currentProductName} | القيمة المعلقة: ${currentProductPrice} ريال`;
         document.getElementById('timerOverlay').style.display = 'flex';
         
-        // تشغيل محاكاة الـ 24 ساعة السريعة (5 ثوانٍ للتحكيم والعرض الحي)
-        startSimulationTimer(currentProductPrice, currentProductName);
+        // تشغيل عد تنازلي واقعي ومستمر داخل نافذة التجميد دون الانتقال لأي نوافذ أخرى
+        startSimulationTimer();
     } 
     else {
         alert("تم تخطي الحماية وإتمام عملية الخصم الفوري للمنتج.");
     }
 }
 
-function startSimulationTimer(price, name) {
-    let timeLeft = 5; 
+function startSimulationTimer() {
+    let hours = 23;
+    let minutes = 59;
+    let seconds = 59;
     const timerElement = document.getElementById('liveSimulationTimer');
     
-    const interval = setInterval(() => {
-        timeLeft--;
-        if (timeLeft > 0) {
-            timerElement.innerText = `00:00:0${timeLeft} ⏳`;
-        } else {
-            clearInterval(interval);
-            document.getElementById('timerOverlay').style.display = 'none';
-            
-            // فتح نافذة القرار النهائي فور انتهاء التجميد تلقائياً
-            openDecisionOverlay(price, name);
+    if(window.simulationInterval) clearInterval(window.simulationInterval);
+
+    window.simulationInterval = setInterval(() => {
+        seconds--;
+        if (seconds < 0) {
+            seconds = 59;
+            minutes--;
+            if (minutes < 0) {
+                minutes = 59;
+                hours--;
+            }
         }
+        if (hours < 0) {
+            clearInterval(window.simulationInterval);
+            return;
+        }
+        let hStr = hours < 10 ? '0' + hours : hours;
+        let mStr = minutes < 10 ? '0' + minutes : minutes;
+        let sStr = seconds < 10 ? '0' + seconds : seconds;
+        
+        timerElement.innerText = `${hStr}:${mStr}:${sStr} ⏳`;
     }, 1000);
-}
-
-function openDecisionOverlay(price, name) {
-    window.pendingPrice = price;
-    document.getElementById('decisionPopupText').innerHTML = `لقد صمدت بنجاح وتجاوزت الرغبة العاطفية المؤقتة لشراء <b>"${name}"</b> وتم فك التجميد التلقائي عن مبلغ <b style="color:var(--purple); font-size:16px;">${price} ريال</b>.<br><br><b>حدد مسار الكاش الآن بكل حكمة ومسؤولية:</b>`;
-    document.getElementById('decisionOverlay').style.display = 'flex';
-}
-
-function processFinalDestination(destination) {
-    document.getElementById('decisionOverlay').style.display = 'none';
-    const price = window.pendingPrice;
-    
-    if (destination === 'savings') {
-        alert(`💰 نجاح باهر! تم إيداع الـ (${price} ريال) بالكامل في "حساب المدخرات الاستثماري" لمستقبلك المالي.`);
-    } else {
-        alert(`💳 تم فك الارتباط، وإعادة الـ (${price} ريال) مباشرة إلى "محفظتك الجارية الجاهزة للصرف الواعي".`);
-    }
 }
 </script>
 
