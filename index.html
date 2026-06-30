@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر وميض الإلكتروني - بوابة الدفع الذكية</title>
+    <style>
+        :root {
+            --bg-dark: #090d16;
+            --card-dark: #111a2e;
+            --primary: #38bdf8;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --purple: #a855f7;
+            --text-main: #f8fafc;
+            --text-muted: #64748b;
+            --alinma-brown: #ff8c00;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        body { background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 0; }
+        
+        /* الهيدر الخاص بالمتجر */
+        .store-header { background-color: var(--card-dark); padding: 30px 20px; border-bottom: 1px solid #1e293b; text-align: center; }
+        .store-header h1 { margin: 0; font-size: 26px; color: var(--text-main); }
+        .store-header p { margin: 8px 0 0 0; color: var(--text-muted); font-size: 14px; }
+
+        .main-layout { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+        
+        /* المتجر الإلكتروني */
+        .products-section h2 { font-size: 22px; margin-top: 0; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; }
+        .store-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+        .product-card { background: var(--card-dark); border: 1px solid #1e293b; padding: 25px; border-radius: 14px; text-align: center; transition: all 0.3s ease; }
+        .product-card:hover { border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(56, 189, 248, 0.05); }
+        .product-img { background: #1e293b; height: 160px; border-radius: 10px; margin-bottom: 18px; display: flex; align-items: center; justify-content: center; font-size: 50px; }
+        .product-card h4 { margin: 10px 0 5px 0; font-size: 18px; }
+        .product-price { color: var(--warning); font-weight: bold; font-size: 20px; margin: 12px 0; }
+        .buy-btn { background: #2563eb; color: white; border: none; width: 100%; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; transition: 0.2s; }
+        .buy-btn:hover { background: #1d4ed8; }
+
+        /* الشاشات المنبثقة (Overlays) */
+        .extension-overlay { display: none; background: rgba(5, 7, 12, 0.85); position: fixed; top: 0; left: 0; right: 0; bottom: 0; justify-content: center; align-items: center; z-index: 999; backdrop-filter: blur(6px); }
+        .extension-popup { background: var(--card-dark); border-radius: 16px; width: 550px; padding: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); border: 1px solid #1e293b; animation: popIn 0.25s ease-out; }
+        
+        @keyframes popIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        
+        .popup-header { font-size: 18px; font-weight: bold; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #1e293b; display: flex; align-items: center; gap: 8px; }
+        .axis-card { background: var(--bg-dark); border-radius: 8px; padding: 14px; margin-bottom: 12px; border-right: 4px solid var(--primary); }
+        .signal-banner { text-align: center; padding: 8px; border-radius: 6px; font-weight: bold; margin-top: 8px; font-size: 12px; }
+        .banner-green { background: rgba(34, 197, 94, 0.15); color: #4ade80; }
+        .banner-yellow { background: rgba(245, 158, 11, 0.15); color: #fcd34d; }
+        .banner-red { background: rgba(239, 68, 68, 0.15); color: #fca5a5; }
+
+        .popup-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+        .action-btn { width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; border: none; font-size: 14px; transition: 0.2s; }
+        .btn-abort { background-color: var(--success); color: white; }
+        .btn-rescue { background: linear-gradient(135deg, var(--purple) 0%, #7c3aed 100%); color: white; }
+        .btn-ignore { background-color: #1e293b; color: #94a3b8; }
+
+        /* خيارات صفحة الدفع (Checkout UI) */
+        .payment-methods { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
+        .method-option { display: flex; align-items: center; justify-content: space-between; padding: 14px; background: var(--bg-dark); border: 1px solid #1e293b; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+        .method-option:hover { border-color: var(--primary); }
+        .alinma-style { border-right: 4px solid var(--alinma-brown); }
+
+        /* الحجز السلوكي ومتابعة التجميد المؤقت داخل الداشبورد الداخلي المدمج */
+        .inline-status { background: var(--bg-dark); padding: 15px; border-radius: 8px; margin-top: 15px; border: 1px dashed #1e293b; text-align: right; }
+        .timer-badge { background: rgba(168, 85, 247, 0.15); color: var(--purple); padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 13px; }
+    </style>
+</head>
+<body>
+
+<div class="store-header">
+    <h1>🛍️ متجر وميض الإلكتروني - تجربة تسوق متكاملة</h1>
+    <p>أحدث المنتجات والكماليات التقنية بين يديك مع خيارات دفع آمنة وسريعة</p>
+</div>
+
+<div class="main-layout">
+    <div class="products-section">
+        <h2>🔥 العروض الحصرية الحالية</h2>
+        <div class="store-grid">
+            <div class="product-card">
+                <div class="product-img">🎧</div>
+                <h4>سماعة عازلة للصوت المحيطي</h4>
+                <div class="product-price">250 ريال</div>
+                <button class="buy-btn" onclick="openCheckoutPage('سماعة عازلة للصوت المحيطي', 250)">شراء فوري ⚡</button>
+            </div>
+            <div class="product-card">
+                <div class="product-img">⌚</div>
+                <h4>ساعة ذكية رياضية Pro</h4>
+                <div class="product-price">750 ريال</div>
+                <button class="buy-btn" onclick="openCheckoutPage('ساعة ذكية رياضية Pro', 750)">شراء فوري ⚡</button>
+            </div>
+            <div class="product-card">
+                <div class="product-img">🛴</div>
+                <h4>سكوتر ذكي جيل مطور</h4>
+                <div class="product-price">1800 ريال</div>
+                <button class="buy-btn" onclick="openCheckoutPage('سكوتر ذكي جيل مطور', 1800)">شراء فوري ⚡</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="extension-overlay" id="checkoutOverlay">
+    <div class="extension-popup">
+        <div class="popup-header">🛍️ مراجعة وتأكيد طلب الشراء</div>
+        <p style="font-size: 14px; color: var(--text-muted); margin: 0;">المنتج المحدد: <b id="checkoutProdName" style="color:#fff;"></b></p>
+        <p style="font-size: 16px; color: var(--warning); margin: 5px 0 20px 0;">القيمة الإجمالية: <b id="checkoutProdPrice"></b> ريال</p>
+        
+        <label style="font-weight: bold; color: var(--primary); font-size: 13px;">اختر بوابة الدفع لإتمام العملية:</label>
+        <div class="payment-methods">
+            
+            <div class="method-option alinma-style" onclick="selectPaymentGateway('alinma')">
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <span style="font-size:24px;">🤎</span>
+                    <div>
+                        <div style="font-weight: bold; color: var(--alinma-brown); font-size:14px;">مصرف الإنماء (بوابة الحوكمة السلوكية)</div>
+                        <div style="font-size: 11px; color: var(--text-muted);">تحليل الرغبة وحماية ميزانيتك قبل الخصم المباشر</div>
+                    </div>
+                </div>
+                <span style="color: var(--primary); font-size:12px;">اختر ➔</span>
+            </div>
+
+            <div class="method-option" onclick="selectPaymentGateway('standard')">
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <span style="font-size:24px;">💳</span>
+                    <div>
+                        <div style="font-size:14px;">بطاقات مدى / فيزا الائتمانية التقليدية</div>
+                        <div style="font-size: 11px; color: var(--text-muted);">سحب رصيد فوري مباشر دون تقديم نصائح مالية</div>
+                    </div>
+                </div>
+                <span style="color: var(--text-muted); font-size:12px;">دفع عادي</span>
+            </div>
+        </div>
+        
+        <button class="action-btn btn-ignore" style="margin-top: 15px;" onclick="document.getElementById('checkoutOverlay').style.display='none'">❌ تراجع وإلغاء</button>
+    </div>
+</div>
+
+<div class="extension-overlay" id="extOverlay">
+    <div class="extension-popup">
+        <div class="popup-header" style="color: var(--alinma-brown);">
+            🧠 بوابة الإنماء الذكية: تريّث وفكّر قبل إتمام الصرف!
+        </div>
+
+        <div class="axis-card" style="border-right-color: var(--warning);">
+            <div style="font-weight: bold; color: var(--warning); margin-bottom: 4px; font-size:13px;">🎯 المقايضة وتأخير الأهداف:</div>
+            <div id="axis1Text" style="font-size: 12px; line-height: 1.5;"></div>
+        </div>
+
+        <div class="axis-card" style="border-right-color: var(--success);">
+            <div style="font-weight: bold; color: var(--success); margin-bottom: 4px; font-size:13px;">📈 القيمة الاستثمارية الضائعة (فرصة بديلة):</div>
+            <div id="axis2Text" style="font-size: 12px; line-height: 1.5;"></div>
+        </div>
+
+        <div class="axis-card" id="axis3Card">
+            <div style="font-weight: bold; margin-bottom: 4px; font-size:13px;">🚦 التحليل السلوكي لميزانية كمالياتك:</div>
+            <div id="axis3Text" style="font-size: 12px; margin-bottom: 5px;"></div>
+            <div id="signalBanner" class="signal-banner"></div>
+        </div>
+
+        <div class="popup-actions">
+            <button class="action-btn btn-abort" onclick="handleUserDecision('save_direct')">❌ تراجع فوري عن الشراء وحوّل الكاش للادخار</button>
+            <button class="action-btn btn-rescue" onclick="handleUserDecision('rescue')">🔒 تفعيل الحجز السلوكي التلقائي (تجميد المبلغ 24 ساعة بمصرف الإنماء)</button>
+            <button class="action-btn btn-ignore" onclick="handleUserDecision('buy')">تجاهل الإرشاد المالي واستمر بالخصم الفوري</button>
+        </div>
+    </div>
+</div>
+
+<div class="extension-overlay" id="timerOverlay">
+    <div class="extension-popup" style="text-align: center;">
+        <div class="popup-header" style="color: var(--purple); justify-content: center;">
+            🔒 تم حجز وتجميد المبلغ بنجاح عبر حساب الإنماء
+        </div>
+        <p style="font-size: 14px; color: var(--text-main);">نحن نساعدك الآن على تهدئة الرغبة الاستهلاكية الاندفاعية.</p>
+        
+        <div class="inline-status">
+            <div style="font-weight: bold; margin-bottom: 8px;" id="timerProdDetails"></div>
+            <div>الوقت المتبقي لانتهاء الحجز السلوكي تلقائياً:</div>
+            <div style="margin-top: 10px;"><span class="timer-badge" id="liveSimulationTimer">24:00:00</span></div>
+        </div>
+    </div>
+</div>
+
+<div class="extension-overlay" id="decisionOverlay">
+    <div class="extension-popup">
+        <div class="popup-header" style="color: var(--success);">
+            🔓 انتهت مدة الحجز السلوكي التلقائي! (اكتمل تحدي الصمود)
+        </div>
+        <p style="font-size: 14px; line-height: 1.6; color: var(--text-main);" id="decisionPopupText"></p>
+        <div class="popup-actions" style="display:flex; flex-direction:row; gap:10px;">
+            <button class="action-btn btn-abort" style="flex:1;" onclick="processFinalDestination('savings')">💰 حساب المدخرات</button>
+            <button class="action-btn btn-ignore" style="flex:1; background-color: var(--primary); color:white;" onclick="processFinalDestination('wallet')">💳 المحفظة الجارية</button>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentProductName = "";
+let currentProductPrice = 0;
+
+// فتح صفحة الدفع (Checkout)
+function openCheckoutPage(productName, price) {
+    currentProductName = productName;
+    currentProductPrice = price;
+    document.getElementById('checkoutProdName').innerText = productName;
+    document.getElementById('checkoutProdPrice').innerText = price;
+    document.getElementById('checkoutOverlay').style.display = 'flex';
+}
+
+// معالجة اختيار البوابة البنكية
+function selectPaymentGateway(gateway) {
+    document.getElementById('checkoutOverlay').style.display = 'none';
+    if (gateway === 'alinma') {
+        // تحويل ديناميكي لصفحة فكرتك الإرشادية
+        triggerAlinmaMindGate(currentProductName, currentProductPrice);
+    } else {
+        alert("تم الخصم المباشر وإتمام الشراء التقليدي دون الاستفادة من ميزات التوعية بمصرف الإنماء.");
+    }
+}
+
+// تشغيل ميزات التحليل المالي السلوكي (فكرتك)
+function triggerAlinmaMindGate(productName, price) {
+    // قيم افتراضية ذكية لحساب النسب والأيام لإبهار لجنة التحكيم بدون تعقيد الواجهة
+    const userBudget = 2000;
+    const userGoal = "شراء بلايستيشن 5 برو";
+    const monthlySavings = 500;
+
+    const dailySavingsRate = monthlySavings / 30;
+    const delayDays = Math.ceil(price / dailySavingsRate);
+    document.getElementById('axis1Text').innerHTML = `شراء <b>"${productName}"</b> الآن سوف يؤخر تحقيق هدفك الأكبر <b>[ ${userGoal} ]</b> بمقدار <b style="color:var(--warning);">${delayDays} يوماً إضافياً</b>!`;
+
+    const futureValue = price * Math.pow((1 + 0.08), 5);
+    document.getElementById('axis2Text').innerHTML = `لو استثمرت الـ <b>${price} ريال</b> بدلاً من صرفها، ستنمو قيمتها المركبة لتصل إلى <b style="color:var(--success);">${futureValue.toFixed(2)} ريال</b> بعد 5 سنوات!`;
+
+    const percent = (price / userBudget) * 100;
+    const signalBanner = document.getElementById('signalBanner');
+    let feedbackText = `هذه العملية تستهلك <b>${percent.toFixed(1)}%</b> من صافي ميزانية كمالياتك الشهرية.<br>`;
+
+    if (percent < 15) {
+        signalBanner.className = "signal-banner banner-green";
+        signalBanner.innerText = "🟢 إشارة خضراء: الشراء آمن وضمن نطاق الصرف المسموح.";
+    } else if (percent >= 15 && percent <= 30) {
+        signalBanner.className = "signal-banner banner-yellow";
+        signalBanner.innerText = "🟡 إشارة صفراء: حذر! رغبة لحظية قد تضغط على ميزانيتك الحالية.";
+    } else {
+        signalBanner.className = "signal-banner banner-red";
+        signalBanner.innerText = "🔴 إشارة حمراء: خطر! تجاوز حاد واندفاعي لحدود الميزانية الموصى بها.";
+    }
+    document.getElementById('axis3Text').innerHTML = feedbackText;
+    document.getElementById('extOverlay').style.display = 'flex';
+}
+
+function handleUserDecision(action) {
+    document.getElementById('extOverlay').style.display = 'none';
+    
+    if (action === 'save_direct') {
+        alert(`🏆 انتصار مالي ذكي! تم إلغاء الشراء وتحويل مبلغ الـ (${currentProductPrice} ريال) تلقائياً لحساب ادخار هدفك.`);
+    } 
+    else if (action === 'rescue') {
+        document.getElementById('timerProdDetails').innerHTML = `المنتج المجمّد: ${currentProductName} | القيمة المعلقة: ${currentProductPrice} ريال`;
+        document.getElementById('timerOverlay').style.display = 'flex';
+        
+        // تشغيل محاكاة الـ 24 ساعة السريعة (5 ثوانٍ للتحكيم والعرض الحي)
+        startSimulationTimer(currentProductPrice, currentProductName);
+    } 
+    else {
+        alert("تم تخطي الحماية وإتمام عملية الخصم الفوري للمنتج.");
+    }
+}
+
+function startSimulationTimer(price, name) {
+    let timeLeft = 5; 
+    const timerElement = document.getElementById('liveSimulationTimer');
+    
+    const interval = setInterval(() => {
+        timeLeft--;
+        if (timeLeft > 0) {
+            timerElement.innerText = `00:00:0${timeLeft} ⏳`;
+        } else {
+            clearInterval(interval);
+            document.getElementById('timerOverlay').style.display = 'none';
+            
+            // فتح نافذة القرار النهائي فور انتهاء التجميد تلقائياً
+            openDecisionOverlay(price, name);
+        }
+    }, 1000);
+}
+
+function openDecisionOverlay(price, name) {
+    window.pendingPrice = price;
+    document.getElementById('decisionPopupText').innerHTML = `لقد صمدت بنجاح وتجاوزت الرغبة العاطفية المؤقتة لشراء <b>"${name}"</b> وتم فك التجميد التلقائي عن مبلغ <b style="color:var(--purple); font-size:16px;">${price} ريال</b>.<br><br><b>حدد مسار الكاش الآن بكل حكمة ومسؤولية:</b>`;
+    document.getElementById('decisionOverlay').style.display = 'flex';
+}
+
+function processFinalDestination(destination) {
+    document.getElementById('decisionOverlay').style.display = 'none';
+    const price = window.pendingPrice;
+    
+    if (destination === 'savings') {
+        alert(`💰 نجاح باهر! تم إيداع الـ (${price} ريال) بالكامل في "حساب المدخرات الاستثماري" لمستقبلك المالي.`);
+    } else {
+        alert(`💳 تم فك الارتباط، وإعادة الـ (${price} ريال) مباشرة إلى "محفظتك الجارية الجاهزة للصرف الواعي".`);
+    }
+}
+</script>
+
+</body>
+</html>
