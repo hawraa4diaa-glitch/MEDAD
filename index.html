@@ -1,290 +1,791 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>متجر وميض الإلكتروني - بوابة الدفع الذكية</title>
-    <style>
-        :root {
-            --bg-dark: #090d16;
-            --card-dark: #111a2e;
-            --primary: #38bdf8;
-            --success: #22c55e;
-            --warning: #f59e0b;
-            --purple: #a855f7;
-            --text-main: #f8fafc;
-            --text-muted: #64748b;
-            --alinma-brown: #ff8c00;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>متجر ومِيض الإلكتروني | بوابة الدفع الذكية</title>
+<style>
+  :root{
+    --navy:#0F2138; --navy-2:#16304F;
+    --terracotta:#C15C36; --terracotta-dark:#A44A2A;
+    --purple:#7B6FC4; --green:#2E9E5B; --amber:#E0A83E; --red:#D0453F;
+    --cream:#F6F2EA; --card:#FFFFFF; --ink:#16233A; --ink-soft:#5B6B84;
+    --line:#E7E1D6; --radius:16px; --shadow:0 8px 30px rgba(15,33,56,0.08);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;background:var(--cream);color:var(--ink);
+    font-family:"Segoe UI","Tahoma","Noto Sans Arabic","Helvetica Neue",Arial,sans-serif;
+    line-height:1.55;
+  }
+  #app{max-width:880px;margin:0 auto;padding:22px 16px 60px;}
+  .disclaimer{
+    background:#FBEFE7;border:1px solid #EFD9C8;color:#7A4A26;font-size:12px;
+    padding:9px 14px;border-radius:10px;margin-bottom:16px;text-align:center;
+  }
+  .topbar{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+  .brand-badge{width:40px;height:40px;border-radius:11px;background:var(--terracotta);
+    display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:19px;}
+  .brand-name{font-weight:800;font-size:18px;color:var(--navy);}
+  .brand-sub{font-size:11.5px;color:var(--ink-soft);}
+  .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);
+    padding:22px;border:1px solid rgba(15,33,56,0.04);margin-bottom:16px;}
+  h1{font-size:23px;margin:0 0 4px;color:var(--navy);}
+  h2{font-size:17px;margin:0 0 12px;color:var(--navy);}
+  p{margin:0 0 8px;color:var(--ink-soft);font-size:13.5px;}
 
-        *, *::before, *::after { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
-        body { background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 0; }
-        
-        /* الهيدر الخاص بالمتجر */
-        .store-header { background-color: var(--card-dark); padding: 30px 20px; border-bottom: 1px solid #1e293b; text-align: center; }
-        .store-header h1 { margin: 0; font-size: 26px; color: var(--text-main); }
-        .store-header p { margin: 8px 0 0 0; color: var(--text-muted); font-size: 14px; }
+  .products{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  @media (max-width:680px){.products{grid-template-columns:1fr;}}
+  .product-card{
+    border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center;
+    background:#FBF9F5;display:flex;flex-direction:column;gap:8px;
+  }
+  .product-icon{font-size:34px;}
+  .product-name{font-weight:700;font-size:14.5px;color:var(--navy);min-height:38px;}
+  .product-price{font-weight:800;font-size:17px;color:var(--terracotta);}
+  .mcc-tag{font-size:10.5px;color:var(--ink-soft);background:#EFE9DD;border-radius:999px;padding:3px 9px;display:inline-block;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    padding:12px 18px;border-radius:12px;border:none;cursor:pointer;
+    font-family:inherit;font-weight:700;font-size:13.5px;transition:.15s;width:100%;}
+  .btn:active{transform:scale(.98);}
+  .btn-primary{background:var(--navy);color:#fff;}
+  .btn-primary:hover{background:var(--navy-2);}
+  .btn-green{background:var(--green);color:#fff;}
+  .btn-purple{background:var(--purple);color:#fff;}
+  .btn-dark{background:#2A2A2A;color:#fff;}
+  .btn-outline{background:transparent;border:1px solid var(--line);color:var(--ink);}
+  .btn-sm{padding:10px 14px;font-size:12.5px;}
 
-        .main-layout { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
-        
-        /* المتجر الإلكتروني */
-        .products-section h2 { font-size: 22px; margin-top: 0; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; }
-        .store-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
-        .product-card { background: var(--card-dark); border: 1px solid #1e293b; padding: 25px; border-radius: 14px; text-align: center; transition: all 0.3s ease; }
-        .product-card:hover { border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(56, 189, 248, 0.05); }
-        .product-img { background: #1e293b; height: 160px; border-radius: 10px; margin-bottom: 18px; display: flex; align-items: center; justify-content: center; font-size: 50px; }
-        .product-card h4 { margin: 10px 0 5px 0; font-size: 18px; }
-        .product-price { color: var(--warning); font-weight: bold; font-size: 20px; margin: 12px 0; }
-        .buy-btn { background: #2563eb; color: white; border: none; width: 100%; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; transition: 0.2s; }
-        .buy-btn:hover { background: #1d4ed8; }
+  #reviewSection{display:none;}
+  .review-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px dashed var(--line);font-size:13.5px;}
+  .gateway-choice{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0;}
+  @media (max-width:560px){.gateway-choice{grid-template-columns:1fr;}}
+  .gw-option{border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center;cursor:pointer;background:#fff;transition:.15s;}
+  .gw-option:hover{border-color:var(--terracotta);transform:translateY(-1px);}
+  .gw-option .gw-icon{font-size:26px;margin-bottom:6px;}
+  .gw-option .gw-name{font-weight:700;font-size:13.5px;color:var(--navy);}
+  .gw-option .gw-desc{font-size:11.5px;color:var(--ink-soft);margin-top:3px;}
 
-        /* الشاشات المنبثقة (Overlays) */
-        .extension-overlay { display: none; background: rgba(5, 7, 12, 0.85); position: fixed; top: 0; left: 0; right: 0; bottom: 0; justify-content: center; align-items: center; z-index: 999; backdrop-filter: blur(6px); }
-        .extension-popup { background: var(--card-dark); border-radius: 16px; width: 550px; padding: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); border: 1px solid #1e293b; animation: popIn 0.25s ease-out; }
-        
-        @keyframes popIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        
-        .popup-header { font-size: 18px; font-weight: bold; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #1e293b; display: flex; align-items: center; gap: 8px; }
-        .axis-card { background: var(--bg-dark); border-radius: 8px; padding: 14px; margin-bottom: 12px; border-right: 4px solid var(--primary); }
-        .signal-banner { text-align: center; padding: 8px; border-radius: 6px; font-weight: bold; margin-top: 8px; font-size: 12px; }
-        .banner-green { background: rgba(34, 197, 94, 0.15); color: #4ade80; }
-        .banner-yellow { background: rgba(245, 158, 11, 0.15); color: #fcd34d; }
-        .banner-red { background: rgba(239, 68, 68, 0.15); color: #fca5a5; }
+  /* Overlay gateway */
+  .overlay{position:fixed;inset:0;background:rgba(15,20,30,0.55);
+    display:flex;align-items:flex-start;justify-content:center;padding:30px 14px;overflow-y:auto;z-index:50;}
+  .gateway{background:var(--navy);color:#fff;border-radius:20px;max-width:480px;width:100%;
+    padding:22px 20px 20px;box-shadow:0 20px 60px rgba(0,0,0,0.35);}
+  .gateway-head{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+  .gateway-head .dot{width:9px;height:9px;border-radius:50%;background:var(--terracotta);}
+  .gateway-title{font-weight:800;font-size:15px;}
+  .nudge{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);
+    border-radius:14px;padding:14px 15px;margin-bottom:12px;}
+  .nudge-label{font-size:11.5px;color:#C9D3E4;font-weight:700;margin-bottom:6px;}
+  .nudge-body{font-size:13.5px;line-height:1.6;}
+  .nudge-body b{color:#fff;}
+  .signal-banner{border-radius:12px;padding:12px 14px;font-size:13px;font-weight:700;margin-bottom:14px;}
+  .signal-green{background:rgba(46,158,91,0.18);color:#8FE3AE;}
+  .signal-amber{background:rgba(224,168,62,0.18);color:#FBD98A;}
+  .signal-red{background:rgba(208,69,63,0.18);color:#FFAFA9;}
+  .gateway-actions .btn{margin-bottom:9px;font-size:13.5px;}
 
-        .popup-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
-        .action-btn { width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; border: none; font-size: 14px; transition: 0.2s; }
-        .btn-abort { background-color: var(--success); color: white; }
-        .btn-rescue { background: linear-gradient(135deg, var(--purple) 0%, #7c3aed 100%); color: white; }
-        .btn-ignore { background-color: #1e293b; color: #94a3b8; }
-
-        /* خيارات صفحة الدفع (Checkout UI) */
-        .payment-methods { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
-        .method-option { display: flex; align-items: center; justify-content: space-between; padding: 14px; background: var(--bg-dark); border: 1px solid #1e293b; border-radius: 8px; cursor: pointer; transition: 0.2s; }
-        .method-option:hover { border-color: var(--primary); }
-        .alinma-style { border-right: 4px solid var(--alinma-brown); }
-
-        /* الحجز السلوكي ومتابعة التجميد المؤقت داخل الداشبورد الداخلي المدمج */
-        .inline-status { background: var(--bg-dark); padding: 15px; border-radius: 8px; margin-top: 15px; border: 1px dashed #1e293b; text-align: right; }
-        .timer-badge { background: rgba(168, 85, 247, 0.15); color: var(--purple); padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 13px; }
-    </style>
+  /* Hold confirmation */
+  .hold-box{
+    background:linear-gradient(135deg,var(--navy),var(--navy-2));color:#fff;border-radius:18px;
+    padding:26px 22px;text-align:center;
+  }
+  .hold-timer{font-size:30px;font-weight:800;letter-spacing:1px;margin:14px 0;}
+  .roadmap{background:#FBF9F5;border:1px dashed var(--line);border-radius:14px;padding:16px;}
+  .roadmap ul{margin:8px 0 0;padding-inline-start:18px;font-size:13px;color:var(--ink-soft);}
+  .roadmap li{margin-bottom:5px;}
+  details.tech{margin-top:6px;}
+  details.tech summary{cursor:pointer;font-weight:700;font-size:13px;color:var(--navy);}
+  details.tech pre{background:var(--navy);color:#D7E3F4;padding:12px;border-radius:10px;
+    font-size:11.5px;overflow-x:auto;margin-top:10px;line-height:1.5;}
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
+    background:var(--navy);color:#fff;padding:13px 22px;border-radius:12px;font-size:13.5px;
+    font-weight:600;box-shadow:0 10px 26px rgba(0,0,0,0.25);z-index:100;max-width:90%;text-align:center;}
+</style>
 </head>
 <body>
+<div id="app">
 
-<div class="store-header">
-    <h1>🛍️ متجر وميض الإلكتروني - تجربة تسوق متكاملة</h1>
-    <p>أحدث المنتجات والكماليات التقنية بين يديك مع خيارات دفع آمنة وسريعة</p>
-</div>
+  <div class="disclaimer">⚠️ تنبيه محاكاة: هذه الصفحة مشروع تجريبي للهاكاثون فقط، ولا تمثل مصرف الإنماء الرسمي ولا تُجمع فيها أي بيانات أو مبالغ حقيقية. البيانات تُحفظ محليًا في متصفحك فقط (localStorage) كمحاكاة لقاعدة بيانات بنكية.</div>
 
-<div class="main-layout">
-    <div class="products-section">
-        <h2>🔥 العروض الحصرية الحالية</h2>
-        <div class="store-grid">
-            <div class="product-card">
-                <div class="product-img">🎧</div>
-                <h4>سماعة عازلة للصوت المحيطي</h4>
-                <div class="product-price">250 ريال</div>
-                <button class="buy-btn" onclick="openCheckoutPage('سماعة عازلة للصوت المحيطي', 250)">شراء فوري ⚡</button>
-            </div>
-            <div class="product-card">
-                <div class="product-img">⌚</div>
-                <h4>ساعة ذكية رياضية Pro</h4>
-                <div class="product-price">750 ريال</div>
-                <button class="buy-btn" onclick="openCheckoutPage('ساعة ذكية رياضية Pro', 750)">شراء فوري ⚡</button>
-            </div>
-            <div class="product-card">
-                <div class="product-img">🛴</div>
-                <h4>سكوتر ذكي جيل مطور</h4>
-                <div class="product-price">1800 ريال</div>
-                <button class="buy-btn" onclick="openCheckoutPage('سكوتر ذكي جيل مطور', 1800)">شراء فوري ⚡</button>
-            </div>
-        </div>
+  <div class="topbar">
+    <div class="brand-badge">🛍️</div>
+    <div>
+      <div class="brand-name">متجر ومِيض الإلكتروني</div>
+      <div class="brand-sub">تجربة تسوق متكاملة — أحدث المنتجات والكماليات التقنية</div>
     </div>
-</div>
+  </div>
 
-<div class="extension-overlay" id="checkoutOverlay">
-    <div class="extension-popup">
-        <div class="popup-header">🛍️ مراجعة وتأكيد طلب الشراء</div>
-        <p style="font-size: 14px; color: var(--text-muted); margin: 0;">المنتج المحدد: <b id="checkoutProdName" style="color:#fff;"></b></p>
-        <p style="font-size: 16px; color: var(--warning); margin: 5px 0 20px 0;">القيمة الإجمالية: <b id="checkoutProdPrice"></b> ريال</p>
-        
-        <label style="font-weight: bold; color: var(--primary); font-size: 13px;">اختر بوابة الدفع لإتمام العملية:</label>
-        <div class="payment-methods">
-            
-            <div class="method-option alinma-style" onclick="selectPaymentGateway('alinma')">
-                <div style="display:flex; align-items:center; gap:12px;">
-                    <span style="font-size:24px;">💳</span>
-                    <div>
-                        <div style="font-weight: bold; color: var(--alinma-brown); font-size:14px;">مصرف الإنماء </div>
-                        <div style="font-size: 11px; color: var(--text-muted);"></div>
-                    </div>
-                </div>
-                <span style="color: var(--primary); font-size:12px;">اختر ➔</span>
-            </div>
+  <div class="card">
+    <h2>🔥 العروض الحصرية الحالية</h2>
+    <div class="products" id="productGrid"></div>
+  </div>
 
-            <div class="method-option" onclick="selectPaymentGateway('standard')">
-                <div style="display:flex; align-items:center; gap:12px;">
-                    <span style="font-size:24px;">💳</span>
-                    <div>
-                        <div style="font-size:14px;">بطاقات مدى / فيزا الائتمانية التقليدية</div>
-                        <div style="font-size: 11px; color: var(--text-muted);"></div>
-                    </div>
-                </div>
-                <span style="color: var(--text-muted); font-size:12px;">دفع عادي</span>
-            </div>
-        </div>
-        
-        <button class="action-btn btn-ignore" style="margin-top: 15px;" onclick="document.getElementById('checkoutOverlay').style.display='none'">❌ تراجع وإلغاء</button>
+  <div class="card" id="reviewSection">
+    <h2>🛍️ مراجعة وتأكيد طلب الشراء</h2>
+    <div class="review-row"><span>المنتج المحدد:</span><b id="reviewName">—</b></div>
+    <div class="review-row"><span>القيمة الإجمالية:</span><b id="reviewPrice">—</b></div>
+    <p style="margin-top:12px;">اختر بوابة الدفع لإتمام العملية:</p>
+
+    <div class="gateway-choice">
+      <div class="gw-option" onclick="chooseGateway('alinma')">
+        <div class="gw-icon">💳</div>
+        <div class="gw-name">مصرف الإنماء</div>
+        <div class="gw-desc">بوابة ذكية بحوكمة سلوكية</div>
+      </div>
+      <div class="gw-option" onclick="chooseGateway('regular')">
+        <div class="gw-icon">💳</div>
+        <div class="gw-name">بطاقات مدى / فيزا الائتمانية التقليدية</div>
+        <div class="gw-desc">دفع عادي بدون تدخل</div>
+      </div>
     </div>
-</div>
 
-<div class="extension-overlay" id="extOverlay">
-    <div class="extension-popup">
-        <div class="popup-header" style="color: var(--alinma-brown);">
-            🧠 بوابة الإنماء الذكية: تريّث وفكّر قبل إتمام الصرف!
-        </div>
+    <button class="btn btn-outline" onclick="cancelReview()">❌ تراجع وإلغاء</button>
+  </div>
 
-        <div class="axis-card" style="border-right-color: var(--warning);">
-            <div style="font-weight: bold; color: var(--warning); margin-bottom: 4px; font-size:13px;">🎯 المقايضة وتأخير الأهداف:</div>
-            <div id="axis1Text" style="font-size: 12px; line-height: 1.5;"></div>
-        </div>
+  <div class="card" id="holdSection" style="display:none;"></div>
 
-        <div class="axis-card" style="border-right-color: var(--success);">
-            <div style="font-weight: bold; color: var(--success); margin-bottom: 4px; font-size:13px;">📈 القيمة الاستثمارية الضائعة (فرصة بديلة):</div>
-            <div id="axis2Text" style="font-size: 12px; line-height: 1.5;"></div>
-        </div>
+  <div class="card">
+    <h2>🧠 محرك الذكاء السلوكي — نظرة سريعة</h2>
+    <p style="margin:0 0 10px;">بدل الاعتماد على ميزانية وعتبات ثابتة موحّدة لكل المستخدمين، يبني <code>bank-api.js</code> ميزانية كماليات شخصية وتنبيهات نمط الإنفاق من بيانات صرفك الفعلية (آخر 14 يومًا)، المخزّنة في قاعدة بيانات محلية دائمة.</p>
+    <div id="engineStatsPreview" class="notice">جاري تحميل إحصاءات الإنفاق…</div>
+  </div>
 
-        <div class="axis-card" id="axis3Card">
-            <div style="font-weight: bold; margin-bottom: 4px; font-size:13px;">🚦 التحليل السلوكي لميزانية كمالياتك:</div>
-            <div id="axis3Text" style="font-size: 12px; margin-bottom: 5px;"></div>
-            <div id="signalBanner" class="signal-banner"></div>
-        </div>
-
-        <div class="popup-actions">
-            <button class="action-btn btn-abort" onclick="handleUserDecision('save_direct')">❌ تراجع فوري عن الشراء وحوّل الكاش للادخار</button>
-            <button class="action-btn btn-rescue" onclick="handleUserDecision('rescue')">🔒 تفعيل الحجز السلوكي التلقائي (تجميد المبلغ 24 ساعة بمصرف الإنماء)</button>
-            <button class="action-btn btn-ignore" onclick="handleUserDecision('buy')">تجاهل الإرشاد المالي واستمر بالخصم الفوري</button>
-        </div>
+  <div class="card">
+    <h2>🗺️ خارطة الطريق التقنية القادمة</h2>
+    <div class="roadmap">
+      <p style="margin:0;"><b>تم إنجازه في هذه النسخة:</b> قاعدة بيانات دائمة (محاكاة Backend عبر <code>bank-api.js</code>)، دوال API غير متزامنة بزمن استجابة شبكة محاكى، تزامن لحظي بين صفحة المتجر وصفحة البنك عبر <code>BroadcastChannel</code>، ومحرك تحليل سلوكي يبني توصياته من بيانات الإنفاق الفعلية.</p>
+      <p style="margin:10px 0 0;"><b>القادم عند الربط الحقيقي مع البنك:</b></p>
+      <ul>
+        <li>استبدال <code>bank-api.js</code> بنداءات <code>fetch()</code> حقيقية لخادم Node.js/Express بنفس تواقيع الدوال الحالية (<code>postTransaction</code>, <code>resolveEscrow</code>...) دون تغيير الواجهة الأمامية.</li>
+        <li>مصادقة العميل عبر <b>OAuth Sandbox / Secure WebView</b> فعلية بدل نافذة العرض التجريبية.</li>
+        <li>توسيع تصنيف رمز فئة التاجر (MCC) ليغطي فئات أدق (تعليم، صحة، طوارئ) وتُعفى تلقائيًا من الحجز.</li>
+        <li>ترحيل محرك التحليل السلوكي من إحصاءات محلية إلى نموذج تعلّم آلي مُدرّب على بيانات مجهولة الهوية من عدة مستخدمين لتحسين دقة الميزانية الشخصية.</li>
+      </ul>
     </div>
-</div>
+    <details class="tech">
+      <summary>مخطط حمولة البيانات (JSON Payload) التي سترسل لاحقًا لخادم البنك الحقيقي</summary>
+      <pre id="payloadPreview"></pre>
+    </details>
+  </div>
 
-<div class="extension-overlay" id="timerOverlay">
-    <div class="extension-popup" style="text-align: center;">
-        <div class="popup-header" style="color: var(--purple); justify-content: center;">
-            🔒 تم حجز وتجميد المبلغ بنجاح عبر حساب الإنماء
-        </div>
-        <p style="font-size: 14px; color: var(--text-main);">نحن نساعدك الآن على تهدئة الرغبة الاستهلاكية الاندفاعية.</p>
-        
-        <div class="inline-status">
-            <div style="font-weight: bold; margin-bottom: 8px;" id="timerProdDetails"></div>
-            <div>الوقت المتبقي لانتهاء الحجز السلوكي تلقائياً:</div>
-            <div style="margin-top: 10px;"><span class="timer-badge" id="liveSimulationTimer">23:59:59 ⏳</span></div>
-        </div>
-        <button class="action-btn btn-ignore" style="margin-top: 15px;" onclick="document.getElementById('timerOverlay').style.display='none'">🖥️ العودة للمتجر</button>
-    </div>
 </div>
 
 <script>
-let currentProductName = "";
-let currentProductPrice = 0;
+/* ==========================================================================
+   MEDAD BANK API — طبقة محاكاة Backend حقيقية + محرك ذكاء سلوكي
+   ==========================================================================
+   هذا الملف يحل محل تمرير البيانات عبر رابط الصفحة (URL params) بطبقة
+   أقرب لواقع الإنتاج:
+     - قاعدة بيانات دائمة (localStorage) بدل متغيرات مؤقتة بالمتصفح.
+     - دوال API غير متزامنة (Promise + زمن استجابة شبكة محاكى) بنفس تواقيع
+       الدوال المطلوبة لاحقًا من خادم Node.js/Express حقيقي، بحيث لا يتغيّر
+       كود الواجهة الأمامية عند الربط الفعلي — فقط تُستبدل هذه الدوال بنداءات
+       fetch() حقيقية.
+     - قناة بث لحظية (BroadcastChannel) تحاكي Webhook فوري بين متجر ومِيض
+       وتطبيق بنك الإنماء، بحيث أي عملية في صفحة تنعكس فورًا بالصفحة الأخرى
+       إذا كانتا مفتوحتين معًا (بدون تحديث يدوي).
+     - محرك تحليل سلوكي (Behavioral Engine) يبني توصياته من بيانات الإنفاق
+       الفعلية للمستخدم (متوسط متحرك لآخر 14 يوم) بدل أرقام ثابتة موحّدة
+       لكل المستخدمين.
+   ========================================================================== */
+(function (global) {
+  'use strict';
 
-// فتح صفحة الدفع (Checkout)
-function openCheckoutPage(productName, price) {
-    currentProductName = productName;
-    currentProductPrice = price;
-    document.getElementById('checkoutProdName').innerText = productName;
-    document.getElementById('checkoutProdPrice').innerText = price;
-    document.getElementById('checkoutOverlay').style.display = 'flex';
-}
+  const DB_KEY = 'medad_bank_db_v1';
+  const CHANNEL_NAME = 'medad-bank-sync-channel';
+  const NETWORK_LATENCY_MS = 260; // محاكاة زمن استجابة شبكة/خادم حقيقي
 
-// معالجة اختيار البوابة البنكية
-function selectPaymentGateway(gateway) {
-    document.getElementById('checkoutOverlay').style.display = 'none';
-    if (gateway === 'alinma') {
-        triggerAlinmaMindGate(currentProductName, currentProductPrice);
-    } else {
-        alert("تم الخصم المباشر وإتمام الشراء التقليدي دون الاستفادة من ميزات التوعية بمصرف الإنماء.");
+  const channel = ('BroadcastChannel' in global) ? new BroadcastChannel(CHANNEL_NAME) : null;
+  const listeners = [];
+
+  /* ------------------------------------------------------------------ *
+   * أدوات مساعدة عامة
+   * ------------------------------------------------------------------ */
+  function delay(ms) { return new Promise(res => setTimeout(res, ms)); }
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+  function dayKey(ts) {
+    const d = new Date(ts);
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+  function daysAgo(n) { return Date.now() - n * 24 * 60 * 60 * 1000; }
+
+  /* ------------------------------------------------------------------ *
+   * الحالة الافتراضية + توليد بيانات تاريخية واقعية (Seed) لتشغيل محرك
+   * التحليل والرسوم البيانية منذ اللحظة الأولى للعرض
+   * ------------------------------------------------------------------ */
+  function seedTransactions() {
+    // نمط واقعي: صرف كماليات متكرر أعلى في المساء ونهاية الأسبوع،
+    // مع تصاعد طفيف في آخر 4 أيام لمحاكاة "نزيف السيولة" الذي يصفه المشروع.
+    const luxuryItems = ['قهوة اختصاصية', 'اشتراك ستريمنج', 'طلب توصيل طعام', 'إكسسوار جوال', 'تطبيق ألعاب'];
+    const essentialItems = ['فاتورة اتصالات', 'بقالة أساسية', 'مواصلات'];
+    const tx = [];
+    let idSeq = 1;
+    for (let d = 13; d >= 1; d--) {
+      const ts0 = daysAgo(d);
+      const weekday = new Date(ts0).getDay(); // 5,6 = خميس/جمعة تقريبا لعينة أعلى صرف
+      const isWeekendish = (weekday === 4 || weekday === 5);
+      const escalation = d <= 4 ? (1 + (4 - d) * 0.18) : 1; // تصاعد الاندفاع بآخر 4 أيام
+      const luxuryCount = (isWeekendish ? 2 : 1) + (Math.random() < 0.3 ? 1 : 0);
+
+      for (let i = 0; i < luxuryCount; i++) {
+        const base = 18 + Math.random() * 60;
+        const amount = Math.round(base * escalation * 100) / 100;
+        tx.push({
+          id: idSeq++, item: luxuryItems[Math.floor(Math.random() * luxuryItems.length)],
+          amount, category: 'luxury', decision: 'pay',
+          timestamp: ts0 + Math.floor(Math.random() * 6) * 3600 * 1000 + 14 * 3600 * 1000
+        });
+      }
+      if (Math.random() < 0.6) {
+        tx.push({
+          id: idSeq++, item: essentialItems[Math.floor(Math.random() * essentialItems.length)],
+          amount: Math.round((40 + Math.random() * 70) * 100) / 100, category: 'essential', decision: 'pay',
+          timestamp: ts0 + 9 * 3600 * 1000
+        });
+      }
     }
-}
+    tx.sort((a, b) => a.timestamp - b.timestamp);
+    tx.forEach((t, i) => t.id = i + 1);
+    return { tx, nextId: tx.length + 1 };
+  }
 
-// تشغيل ميزات التحليل المالي السلوكي (فكرتك)
-function triggerAlinmaMindGate(productName, price) {
-    const userBudget = 2000;
-    const userGoal = "شراء بلايستيشن 5 برو";
-    const monthlySavings = 500;
+  function defaultState() {
+    const seeded = seedTransactions();
+    return {
+      account: { id: 'ALINMA-USR-88213', balance: 14350.00 },
+      savings: { balance: 1350.00 },
+      kfoPoints: 185,
+      goal: { name: 'شراء بلايستيشن 5 برو', target: 3000.00 },
+      escrow: [
+        { id: 1, item: 'سكوتر ذكي جيل مطوّر', amount: 1800.00, category: 'luxury', startTime: Date.now() - 10 * 1000, durationMs: 24 * 60 * 60 * 1000 }
+      ],
+      escrowIdSeq: 2,
+      transactions: seeded.tx,
+      txIdSeq: seeded.nextId,
+      lastEvent: null
+    };
+  }
 
-    const dailySavingsRate = monthlySavings / 30;
-    const delayDays = Math.ceil(price / dailySavingsRate);
-    document.getElementById('axis1Text').innerHTML = `شراء <b>"${productName}"</b> الآن سوف يؤخر تحقيق هدفك الأكبر <b>[ ${userGoal} ]</b> بمقدار <b style="color:var(--warning);">${delayDays} يوماً إضافياً</b>!`;
-
-    const futureValue = price * Math.pow((1 + 0.08), 5);
-    document.getElementById('axis2Text').innerHTML = `لو استثمرت الـ <b>${price} ريال</b> بدلاً من صرفها، ستنمو قيمتها المركبة لتصل إلى <b style="color:var(--success);">${futureValue.toFixed(2)} ريال</b> بعد 5 سنوات!`;
-
-    const percent = (price / userBudget) * 100;
-    const signalBanner = document.getElementById('signalBanner');
-    let feedbackText = `هذه العملية تستهلك <b>${percent.toFixed(1)}%</b> من صافي ميزانية كمالياتك الشهرية.<br>`;
-
-    if (percent < 15) {
-        signalBanner.className = "signal-banner banner-green";
-        signalBanner.innerText = "🟢 إشارة خضراء: الشراء آمن وضمن نطاق الصرف المسموح.";
-    } else if (percent >= 15 && percent <= 30) {
-        signalBanner.className = "signal-banner banner-yellow";
-        signalBanner.innerText = "🟡 إشارة صفراء: حذر! رغبة لحظية قد تضغط على ميزانيتك الحالية.";
-    } else {
-        signalBanner.className = "signal-banner banner-red";
-        signalBanner.innerText = "🔴 إشارة حمراء: خطر! تجاوز حاد واندفاعي لحدود الميزانية الموصى بها.";
+  /* ------------------------------------------------------------------ *
+   * طبقة القراءة/الكتابة (تحاكي قاعدة بيانات دائمة)
+   * ------------------------------------------------------------------ */
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(DB_KEY);
+      if (!raw) { const s = defaultState(); saveState(s, false); return s; }
+      return JSON.parse(raw);
+    } catch (e) {
+      const s = defaultState(); saveState(s, false); return s;
     }
-    document.getElementById('axis3Text').innerHTML = feedbackText;
-    document.getElementById('extOverlay').style.display = 'flex';
-}
-
-function handleUserDecision(action) {
-    document.getElementById('extOverlay').style.display = 'none';
-    
-    if (action === 'save_direct') {
-        alert(`🏆 انتصار مالي ذكي! تم إلغاء الشراء وتحويل مبلغ الـ (${currentProductPrice} ريال) تلقائياً لحساب ادخار هدفك.`);
-    } 
-    else if (action === 'rescue') {
-        document.getElementById('timerProdDetails').innerHTML = `المنتج المجمّد: ${currentProductName} | القيمة المعلقة: ${currentProductPrice} ريال`;
-        document.getElementById('timerOverlay').style.display = 'flex';
-        
-        // تشغيل عد تنازلي واقعي ومستمر داخل نافذة التجميد دون الانتقال لأي نوافذ أخرى
-        startSimulationTimer();
-    } 
-    else {
-        alert("تم تخطي الحماية وإتمام عملية الخصم الفوري للمنتج.");
+  }
+  function saveState(state, broadcast) {
+    localStorage.setItem(DB_KEY, JSON.stringify(state));
+    if (broadcast !== false) notifyListeners(state);
+  }
+  function notifyListeners(state) {
+    listeners.forEach(fn => { try { fn(state); } catch (e) { /* noop */ } });
+    if (channel) { try { channel.postMessage({ type: 'state-updated', at: Date.now() }); } catch (e) {} }
+  }
+  if (channel) {
+    channel.onmessage = (ev) => {
+      if (ev.data && ev.data.type === 'state-updated') {
+        const fresh = loadState();
+        listeners.forEach(fn => { try { fn(fresh); } catch (e) {} });
+      }
+    };
+  }
+  global.addEventListener('storage', (ev) => {
+    if (ev.key === DB_KEY) {
+      const fresh = loadState();
+      listeners.forEach(fn => { try { fn(fresh); } catch (e) {} });
     }
-}
+  });
 
-function startSimulationTimer() {
-    let hours = 23;
-    let minutes = 59;
-    let seconds = 59;
-    const timerElement = document.getElementById('liveSimulationTimer');
-    
-    if(window.simulationInterval) clearInterval(window.simulationInterval);
+  /* ------------------------------------------------------------------ *
+   * محرك التحليل السلوكي (Behavioral Engine)
+   * يبني كل عتبة وميزانية من بيانات المستخدم الفعلية بدل ثوابت عامة
+   * ------------------------------------------------------------------ */
+  const Engine = {
+    INVEST_RATE: 0.08,
+    INVEST_YEARS: 5,
+    FALLBACK_LUXURY_BUDGET: 2000, // يُستخدم فقط لو لا يوجد تاريخ كافٍ
 
-    window.simulationInterval = setInterval(() => {
-        seconds--;
-        if (seconds < 0) {
-            seconds = 59;
-            minutes--;
-            if (minutes < 0) {
-                minutes = 59;
-                hours--;
-            }
-        }
-        if (hours < 0) {
-            clearInterval(window.simulationInterval);
-            return;
-        }
-        let hStr = hours < 10 ? '0' + hours : hours;
-        let mStr = minutes < 10 ? '0' + minutes : minutes;
-        let sStr = seconds < 10 ? '0' + seconds : seconds;
-        
-        timerElement.innerText = `${hStr}:${mStr}:${sStr} ⏳`;
-    }, 1000);
-}
+    spendingStats(state, days) {
+      days = days || 14;
+      const since = daysAgo(days);
+      const recent = state.transactions.filter(t => t.timestamp >= since && (t.decision === 'pay' || t.decision === 'cancel'));
+      const byDayMap = {};
+      let totalSpent = 0, luxurySpent = 0, essentialSpent = 0;
+      for (let i = days - 1; i >= 0; i--) {
+        const k = dayKey(daysAgo(i));
+        byDayMap[k] = { date: k, total: 0, luxury: 0, essential: 0, count: 0 };
+      }
+      recent.forEach(t => {
+        if (t.decision === 'cancel') return; // لم يُصرف فعليًا
+        const k = dayKey(t.timestamp);
+        if (!byDayMap[k]) byDayMap[k] = { date: k, total: 0, luxury: 0, essential: 0, count: 0 };
+        byDayMap[k].total += t.amount; byDayMap[k].count += 1;
+        if (t.category === 'luxury') { byDayMap[k].luxury += t.amount; luxurySpent += t.amount; }
+        else { byDayMap[k].essential += t.amount; essentialSpent += t.amount; }
+        totalSpent += t.amount;
+      });
+      const byDay = Object.values(byDayMap).sort((a, b) => a.date < b.date ? -1 : 1);
+
+      const half = Math.floor(days / 2);
+      const firstHalf = byDay.slice(0, days - half);
+      const secondHalf = byDay.slice(days - half);
+      const sum = arr => arr.reduce((s, d) => s + d.total, 0);
+      const firstAvg = sum(firstHalf) / Math.max(1, firstHalf.length);
+      const secondAvg = sum(secondHalf) / Math.max(1, secondHalf.length);
+      const trendPct = firstAvg > 0 ? ((secondAvg - firstAvg) / firstAvg) * 100 : (secondAvg > 0 ? 100 : 0);
+
+      const last48h = state.transactions.filter(t => t.timestamp >= daysAgo(2) && t.category === 'luxury' && t.decision !== 'cancel');
+      const biggestDay = byDay.reduce((max, d) => d.total > (max ? max.total : -1) ? d : max, null);
+
+      return {
+        byDay, totalSpent, luxurySpent, essentialSpent,
+        avgDaily: totalSpent / days,
+        avgLuxuryDaily: luxurySpent / days,
+        trendPct, biggestDay,
+        impulsiveCount48h: last48h.length,
+        impulsiveTotal48h: last48h.reduce((s, t) => s + t.amount, 0)
+      };
+    },
+
+    // ميزانية كماليات شهرية "شخصية" مبنية من متوسط صرف المستخدم الفعلي
+    // (بدل رقم ثابت 2000 ريال موحّد لجميع المستخدمين في النسخة السابقة)
+    personalLuxuryBudget(stats) {
+      if (stats.luxurySpent <= 0) return this.FALLBACK_LUXURY_BUDGET;
+      const projectedMonthly = stats.avgLuxuryDaily * 30;
+      // هامش أمان 25% فوق المعدّل الفعلي كسقف موصى به
+      return Math.max(500, Math.round(projectedMonthly * 1.25));
+    },
+
+    futureValue(price) { return price * Math.pow(1 + this.INVEST_RATE, this.INVEST_YEARS); },
+
+    // "أنسنة" الرقم: تحويل مبلغ الفرصة البديلة إلى مرادف ملموس ديناميكيًا
+    tangibleEquivalent(amount) {
+      const table = [
+        { max: 60, label: 'كوب قهوة اختصاصي', unit: 22 },
+        { max: 300, label: 'اشتراك تطبيق ستريمنج شهريًا', unit: 45 },
+        { max: 900, label: 'قسط جلسة نادي رياضي شهري', unit: 250 },
+        { max: 3000, label: 'دورة تعليمية قصيرة', unit: 900 },
+        { max: Infinity, label: 'أقساط شهرية من هدفك الأكبر', unit: 500 }
+      ];
+      const row = table.find(r => amount <= r.max);
+      const count = Math.max(1, Math.round(amount / row.unit));
+      return `${count} × ${row.label}`;
+    },
+
+    async assess(product, state) {
+      await delay(NETWORK_LATENCY_MS * 0.6); // محاكاة زمن معالجة المحرك السلوكي
+      const stats = this.spendingStats(state, 14);
+      const budget = this.personalLuxuryBudget(stats);
+      const percent = Math.min(999, (product.price / budget) * 100);
+      const fv = this.futureValue(product.price);
+
+      // معدل التوفير اليومي نحو الهدف المعلن، لحساب أثر "المقايضة الزمنية"
+      const goalRemaining = Math.max(1, state.goal.target - state.savings.balance);
+      const savingRatePerDay = Math.max(5, stats.avgDaily > 0 ? (state.savings.balance / Math.max(3, Math.round((Date.now() - (state.transactions[0] ? state.transactions[0].timestamp : Date.now())) / 86400000))) : 15);
+      const delayDays = Math.max(1, Math.round(product.price / Math.max(6, budget / 120)));
+
+      let level = 'green', signalText = '🟢 إشارة خضراء: العملية آمنة ضمن نمط صرفك المعتاد.';
+      if (percent >= 15 && percent < 30) { level = 'amber'; signalText = '🟡 إشارة صفراء: هذا المبلغ يقترب من حدود ميزانيتك الشخصية للكماليات.'; }
+      if (percent >= 30 && percent < 70) { level = 'red'; signalText = '🔴 إشارة حمراء: تجاوز واضح لنمط صرفك المعتاد على الكماليات.'; }
+      if (percent >= 70) { level = 'critical'; signalText = '🚨 إشارة حرجة: هذا المبلغ يوازي معظم ميزانية كمالياتك الشهرية بأكملها بناءً على سلوكك الفعلي.'; }
+
+      let velocityText = null;
+      if (stats.impulsiveCount48h >= 2) {
+        velocityText = `🧠 اكتشاف نمط: سجّلنا ${stats.impulsiveCount48h} عمليات كماليات خلال آخر 48 ساعة بإجمالي ${stats.impulsiveTotal48h.toFixed(2)} ريال — هذا نمط "نزيف سيولة" متكرر يستحق وقفة.`;
+      } else if (stats.trendPct >= 20) {
+        velocityText = `📈 لاحظنا ارتفاعًا بنسبة ${stats.trendPct.toFixed(0)}% في متوسط صرفك اليومي خلال الأسبوع الأخير مقارنة بالأسبوع الذي قبله.`;
+      } else if (stats.trendPct <= -15) {
+        velocityText = `✅ أداء ممتاز: انخفض متوسط صرفك اليومي بنسبة ${Math.abs(stats.trendPct).toFixed(0)}% مقارنة بالفترة السابقة. استمر على هذا النهج.`;
+      }
+
+      return {
+        percent, level, signalText, budget,
+        fv, tangible: this.tangibleEquivalent(fv - product.price),
+        delayDays, velocityText, stats
+      };
+    }
+  };
+
+  /* ------------------------------------------------------------------ *
+   * واجهة API عامة (محاكاة REST) — Promise + زمن استجابة شبكة
+   * ------------------------------------------------------------------ */
+  const api = {
+    async getAccount() {
+      await delay(NETWORK_LATENCY_MS);
+      const s = loadState();
+      return { account: s.account, savings: s.savings, kfoPoints: s.kfoPoints, goal: s.goal };
+    },
+
+    async getEscrow() {
+      await delay(NETWORK_LATENCY_MS * 0.5);
+      return loadState().escrow;
+    },
+
+    async getSpendingStats(days) {
+      await delay(NETWORK_LATENCY_MS * 0.5);
+      const s = loadState();
+      return Engine.spendingStats(s, days || 14);
+    },
+
+    async assessProduct(product) {
+      const s = loadState();
+      return Engine.assess(product, s);
+    },
+
+    /* عملية جديدة قادمة من المتجر: pay مباشر / cancel فوري / hold مؤقت */
+    async postTransaction(payload) {
+      await delay(NETWORK_LATENCY_MS);
+      const s = loadState();
+      const tx = {
+        id: s.txIdSeq++, item: payload.item, amount: payload.amount,
+        category: payload.category || 'luxury', decision: payload.decision,
+        timestamp: Date.now()
+      };
+      s.transactions.push(tx);
+
+      if (payload.decision === 'cancel') {
+        s.savings.balance += payload.amount;
+        s.kfoPoints += 20;
+      } else if (payload.decision === 'hold') {
+        s.account.balance -= payload.amount;
+        s.escrow.push({
+          id: s.escrowIdSeq++, item: payload.item, amount: payload.amount,
+          category: payload.category || 'luxury', startTime: Date.now(), durationMs: 24 * 60 * 60 * 1000
+        });
+      } else if (payload.decision === 'pay') {
+        s.account.balance -= payload.amount;
+      }
+      s.lastEvent = { type: 'transaction', tx };
+      saveState(s);
+      return { ok: true, tx };
+    },
+
+    async resolveEscrow(id, action) {
+      await delay(NETWORK_LATENCY_MS);
+      const s = loadState();
+      const idx = s.escrow.findIndex(e => e.id === id);
+      if (idx === -1) return { ok: false };
+      const item = s.escrow[idx];
+      s.escrow.splice(idx, 1);
+      if (action === 'save') {
+        s.savings.balance += item.amount;
+        s.kfoPoints += 20;
+        s.transactions.push({ id: s.txIdSeq++, item: item.item, amount: item.amount, category: item.category, decision: 'cancel', timestamp: Date.now() });
+      } else {
+        s.transactions.push({ id: s.txIdSeq++, item: item.item, amount: item.amount, category: item.category, decision: 'pay', timestamp: Date.now() });
+      }
+      s.lastEvent = { type: 'escrow-resolved', item, action };
+      saveState(s);
+      return { ok: true, item, action };
+    },
+
+    async manualDeposit(amount) {
+      await delay(NETWORK_LATENCY_MS * 0.6);
+      const s = loadState();
+      s.savings.balance += amount;
+      s.lastEvent = { type: 'manual-deposit', amount };
+      saveState(s);
+      return { ok: true };
+    },
+
+    async resetDemo() {
+      await delay(120);
+      const s = defaultState();
+      saveState(s);
+      return { ok: true };
+    }
+  };
+
+  global.MedadBank = {
+    init() { loadState(); },
+    getStateSnapshot() { return loadState(); },
+    subscribe(fn) { listeners.push(fn); return () => { const i = listeners.indexOf(fn); if (i > -1) listeners.splice(i, 1); }; },
+    api,
+    engine: Engine
+  };
+
+})(window);
+
 </script>
+<script>
+MedadBank.init();
 
+/* ==========================================================================
+   PRODUCTS — بيانات المتجر (لاحقًا: ستأتي من قاعدة بيانات المتجر عبر API)
+   ========================================================================== */
+const PRODUCTS = [
+  { id:'p1', name:'سماعة عازلة للصوت المحيطي', price:250,  icon:'🎧', category:'essential' },
+  { id:'p2', name:'ساعة ذكية رياضية Pro',       price:750,  icon:'⌚', category:'luxury' },
+  { id:'p3', name:'سكوتر ذكي جيل مطوّر',         price:1800, icon:'🛴', category:'luxury' }
+];
+
+let selectedProduct = null;
+
+function fmt(n){ return Number(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+
+async function renderEngineStatsPreview(){
+  const el = document.getElementById('engineStatsPreview');
+  const stats = await MedadBank.api.getSpendingStats(14);
+  const budget = MedadBank.engine.personalLuxuryBudget(stats);
+  const trendIcon = stats.trendPct >= 10 ? '📈' : (stats.trendPct <= -10 ? '📉' : '➖');
+  el.innerHTML =
+    'متوسط صرفك اليومي على الكماليات: <b>' + fmt(stats.avgLuxuryDaily) + ' ريال</b> · ' +
+    'الميزانية الشخصية المحسوبة تلقائيًا: <b>' + fmt(budget) + ' ريال/شهريًا</b> · ' +
+    'اتجاه آخر أسبوع مقارنة بما قبله: <b>' + trendIcon + ' ' + stats.trendPct.toFixed(0) + '%</b>';
+}
+
+function renderProducts(){
+  const grid = document.getElementById('productGrid');
+  grid.innerHTML = PRODUCTS.map(p => `
+    <div class="product-card">
+      <div class="product-icon">${p.icon}</div>
+      <div class="product-name">${p.name}</div>
+      <div class="mcc-tag">${p.category === 'essential' ? 'MCC: أساسيات' : 'MCC: كماليات'}</div>
+      <div class="product-price">${fmt(p.price)} ريال</div>
+      <button class="btn btn-primary btn-sm" onclick="selectProduct('${p.id}')">شراء فوري ⚡</button>
+    </div>
+  `).join('');
+}
+
+function selectProduct(id){
+  selectedProduct = PRODUCTS.find(p => p.id === id);
+  document.getElementById('reviewName').textContent = selectedProduct.name;
+  document.getElementById('reviewPrice').textContent = fmt(selectedProduct.price) + ' ريال';
+  document.getElementById('reviewSection').style.display = 'block';
+  document.getElementById('holdSection').style.display = 'none';
+  document.getElementById('reviewSection').scrollIntoView({behavior:'smooth', block:'center'});
+  renderPayloadPreview();
+}
+
+function cancelReview(){
+  selectedProduct = null;
+  document.getElementById('reviewSection').style.display = 'none';
+}
+
+/* ==========================================================================
+   API PAYLOAD SIMULATION LAYER
+   هذا القسم يحاكي بالضبط حزمة البيانات (JSON Payload) الموصوفة في قسم
+   "كيفية توفير البيانات" بالعرض التقديمي — merchant_id / amount / category /
+   user_bank_id — وهو الشكل الذي سيُرسل مستقبلًا لخادم Node.js/Express حقيقي.
+   ========================================================================== */
+function buildPayload(product, decision){
+  return {
+    merchant_id: 'WAMEED-STORE-0142',
+    amount: product ? product.price : 0,
+    category: product ? product.category : null,
+    user_bank_id: 'ALINMA-USR-88213',
+    item_name: product ? product.name : null,
+    decision: decision || null,
+    timestamp: Date.now()
+  };
+}
+
+function renderPayloadPreview(){
+  const payload = buildPayload(selectedProduct, null);
+  document.getElementById('payloadPreview').textContent = JSON.stringify(payload, null, 2);
+}
+
+/* ==========================================================================
+   اختيار بوابة الدفع
+   ========================================================================== */
+function chooseGateway(type){
+  if(!selectedProduct) return;
+
+  if(type === 'regular'){
+    document.getElementById('reviewSection').style.display = 'none';
+    showToast('✅ تمت العملية عبر بطاقة مدى/فيزا مباشرة — لا يوجد تدخل سلوكي.');
+    // ملاحظة: بطاقات الطرف الثالث خارج نطاق بيانات بنك الإنماء، لذلك لا تُسجَّل في محرك التحليل السلوكي.
+    return;
+  }
+
+  if(selectedProduct.category === 'essential'){
+    document.getElementById('reviewSection').style.display = 'none';
+    showToast('تم رصد "MCC: أساسيات" — دفع مباشر عبر بنك الإنماء دون تدخل سلوكي.');
+    MedadBank.api.postTransaction({ item: selectedProduct.name, amount: selectedProduct.price, category: 'essential', decision: 'pay' });
+    return;
+  }
+
+  openGateway(selectedProduct);
+}
+
+/* ==========================================================================
+   بوابة الإنماء الذكية (نافذة منبثقة)
+   ========================================================================== */
+async function openGateway(product){
+  // شاشة انتظار قصيرة أثناء استدعاء محرك التحليل السلوكي (Promise حقيقي وليس تأخير وهمي فارغ)
+  const loadingOverlay = document.createElement('div');
+  loadingOverlay.className = 'overlay';
+  loadingOverlay.id = 'gatewayOverlay';
+  loadingOverlay.innerHTML = `<div class="gateway" style="text-align:center;padding:34px 20px;">
+    <div style="font-size:26px;">🧠</div>
+    <div style="margin-top:10px;font-size:13.5px;color:#C9D3E4;">محرك الحوكمة السلوكية يحلّل نمط صرفك الفعلي…</div>
+  </div>`;
+  document.body.appendChild(loadingOverlay);
+
+  const assessment = await MedadBank.engine.assess(product, MedadBank.getStateSnapshot());
+  const existing = document.getElementById('gatewayOverlay');
+  if(existing) existing.remove();
+
+  const price = product.price;
+  const signalClassMap = { green:'signal-green', amber:'signal-amber', red:'signal-red', critical:'signal-red' };
+  const signalClass = signalClassMap[assessment.level] || 'signal-green';
+
+  const velocityCard = assessment.velocityText ? `
+      <div class="nudge">
+        <div class="nudge-label">📊 اكتشاف نمط الإنفاق (تحليل تلقائي من سجلّك)</div>
+        <div class="nudge-body">${assessment.velocityText}</div>
+      </div>` : '';
+
+  const overlay = document.createElement('div');
+  overlay.className = 'overlay';
+  overlay.id = 'gatewayOverlay';
+  overlay.innerHTML = `
+    <div class="gateway">
+      <div class="gateway-head"><div class="dot"></div><div class="gateway-title">🧠 بوابة الإنماء الذكية: تريّث وفكّر قبل إتمام الصرف!</div></div>
+
+      <div class="nudge">
+        <div class="nudge-label">🎯 المقايضة وتأخير الأهداف</div>
+        <div class="nudge-body">شراء "${product.name}" الآن سيؤخر هدفك <b>${MedadBank.getStateSnapshot().goal.name}</b> بمقدار <b>${assessment.delayDays} يومًا</b> تقريبًا حسب معدّل ادخارك الحالي.</div>
+      </div>
+      <div class="nudge">
+        <div class="nudge-label">📈 القيمة الاستثمارية الضائعة (فرصة بديلة)</div>
+        <div class="nudge-body">لو استثمرت الـ ${fmt(price)} ريال بدلًا من صرفها، ستنمو قيمتها لتصل إلى <b>${fmt(assessment.fv)} ريال</b> بعد 5 سنوات — أي ما يعادل <b>${assessment.tangible}</b>.</div>
+      </div>
+      <div class="nudge">
+        <div class="nudge-label">🚦 التحليل السلوكي لميزانيتك الشخصية</div>
+        <div class="nudge-body">هذه العملية تستهلك <b>${assessment.percent.toFixed(1)}%</b> من ميزانية كمالياتك الشهرية المحسوبة تلقائيًا من سلوكك الفعلي (<b>${fmt(assessment.budget)} ريال</b>)، وليست رقمًا ثابتًا موحّدًا لكل المستخدمين.</div>
+      </div>
+      ${velocityCard}
+
+      <div class="signal-banner ${signalClass}">${assessment.signalText}</div>
+
+      <div class="gateway-actions">
+        <button class="btn btn-green" onclick="decisionCancelAndSave()">❌ تراجع فوري عن الشراء وحوّل الكاش للادخار</button>
+        <button class="btn btn-purple" onclick="decisionBehavioralHold()">🔒 تفعيل الحجز السلوكي التلقائي (تجميد المبلغ 24 ساعة بمصرف الإنماء)</button>
+        <button class="btn btn-dark" onclick="decisionIgnoreAndPay()">تجاهل الإرشاد المالي واستمر بالخصم الفوري</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+}
+
+function closeGateway(){
+  const el = document.getElementById('gatewayOverlay');
+  if(el) el.remove();
+}
+
+async function decisionCancelAndSave(){
+  closeGateway();
+  document.getElementById('reviewSection').style.display = 'none';
+  showToast('⏳ جارٍ تحويل المبلغ لصندوق الادخار عبر خادم بنك الإنماء…', 1800);
+  await MedadBank.api.postTransaction({ item: selectedProduct.name, amount: selectedProduct.price, category: selectedProduct.category, decision: 'cancel' });
+  showToast('✅ تم التراجع عن الشراء وتحويل ' + fmt(selectedProduct.price) + ' ريال لصندوق الادخار (+20 نقطة وعي مالي).', 4200);
+  offerBankLink();
+  renderEngineStatsPreview();
+}
+
+async function decisionIgnoreAndPay(){
+  closeGateway();
+  document.getElementById('reviewSection').style.display = 'none';
+  showToast('✅ تم تجاهل الإرشاد المالي، وتمّ الدفع بنجاح وتمرير الطلب للشحن.', 3400);
+  await MedadBank.api.postTransaction({ item: selectedProduct.name, amount: selectedProduct.price, category: selectedProduct.category, decision: 'pay' });
+  renderEngineStatsPreview();
+}
+
+async function decisionBehavioralHold(){
+  closeGateway();
+  document.getElementById('reviewSection').style.display = 'none';
+  await MedadBank.api.postTransaction({ item: selectedProduct.name, amount: selectedProduct.price, category: selectedProduct.category, decision: 'hold' });
+  renderHoldConfirmation();
+  offerBankLink();
+}
+
+/* ==========================================================================
+   شاشة تأكيد الحجز السلوكي (تظهر داخل موقع المتجر مباشرة كما بالنسخة الحيّة)
+   ========================================================================== */
+let holdInterval = null;
+let holdStart = null;
+let holdDurationMs = 24 * 60 * 60 * 1000;
+
+function renderHoldConfirmation(){
+  holdStart = Date.now();
+  const box = document.getElementById('holdSection');
+  box.style.display = 'block';
+  box.innerHTML = `
+    <div class="hold-box">
+      <div style="font-size:32px;">🔒</div>
+      <h2 style="color:#fff;margin-top:8px;">تم حجز وتجميد المبلغ بنجاح عبر حساب الإنماء</h2>
+      <p style="color:#C9D3E4;">نحن نساعدك الآن على تهدئة الرغبة الاستهلاكية الاندفاعية.</p>
+      <div style="font-size:12.5px;color:#9FB0C9;">الوقت المتبقي لانتهاء الحجز السلوكي تلقائيًا:</div>
+      <div class="hold-timer" id="holdTimer">23:59:59 ⏳</div>
+      <button class="btn btn-outline" style="color:#fff;border-color:rgba(255,255,255,0.3);" onclick="returnToStore()">🖥️ العودة للمتجر</button>
+    </div>
+  `;
+  if(holdInterval) clearInterval(holdInterval);
+  holdInterval = setInterval(tickHoldTimer, 1000);
+  tickHoldTimer();
+  box.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+function tickHoldTimer(){
+  const remaining = Math.max(0, holdDurationMs - (Date.now() - holdStart));
+  const totalSec = Math.ceil(remaining/1000);
+  const h = String(Math.floor(totalSec/3600)).padStart(2,'0');
+  const m = String(Math.floor((totalSec%3600)/60)).padStart(2,'0');
+  const s = String(totalSec%60).padStart(2,'0');
+  const el = document.getElementById('holdTimer');
+  if(el) el.textContent = h+':'+m+':'+s+' ⏳';
+  if(remaining <= 0){
+    clearInterval(holdInterval);
+    showToast('انتهت مهلة التفكير — تم تمرير عملية الشراء تلقائيًا لعدم اتخاذ قرار.', 4200);
+  }
+}
+
+function returnToStore(){
+  document.getElementById('holdSection').style.display = 'none';
+  selectedProduct = null;
+  if(holdInterval) clearInterval(holdInterval);
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* ==========================================================================
+   رابط للانتقال إلى حساب البنك (medad2.html) — البيانات نفسها تتزامن تلقائيًا
+   عبر قاعدة البيانات المشتركة (bank-api.js) وBroadcastChannel.
+   ========================================================================== */
+function offerBankLink(){
+  // العملية تزامنت فعليًا مع قاعدة بيانات البنك المشتركة (bank-api.js) لحظة تنفيذها؛
+  // لا حاجة لتمرير القيم عبر رابط الصفحة — الرابط هنا للانتقال فقط.
+  const url = 'medad2.html';
+  const existing = document.getElementById('bankLinkNote');
+  if(existing) existing.remove();
+  const link = document.createElement('div');
+  link.id = 'bankLinkNote';
+  link.style.textAlign = 'center';
+  link.style.marginTop = '10px';
+  link.innerHTML = `<a href="${url}" target="_blank" style="color:var(--navy);font-weight:700;font-size:13px;">🏦 افتح حسابك في بنك الإنماء لمتابعة العملية (تحدّث لحظي تلقائي) ↗</a>`;
+  document.getElementById('app').insertBefore(link, document.getElementById('holdSection').nextSibling ? document.getElementById('holdSection') : null);
+}
+
+function showToast(msg, ms){
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(()=> t.remove(), ms || 3200);
+}
+
+/* ==========================================================================
+   تشغيل أولي
+   ========================================================================== */
+renderProducts();
+renderEngineStatsPreview();
+MedadBank.subscribe(() => renderEngineStatsPreview());
+</script>
 </body>
 </html>
